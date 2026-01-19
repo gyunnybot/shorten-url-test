@@ -1,29 +1,26 @@
 :root{
-  /* 배경(기존 화려한 느낌 유지) */
-  --bg0:#070a12;
-  --bg1:#0b1020;
-  --bg2:#0a1022;
+  --bg0:#070b18;
+  --bg1:#0b1430;
+  --bg2:#0c1738;
 
-  /* 포인트 컬러 (배경/강조에만 사용) */
-  --p1:#7c3aed;
-  --p2:#22c55e;
-  --p3:#06b6d4;
-  --p5:#ec4899;
+  --p1:#8b5cf6;
+  --p2:#22d3ee;
+  --p3:#34d399;
+  --p4:#f472b6;
+  --p5:#fbbf24;
 
-  /* ✅ 컨텐츠 영역(카드/박스/테이블)을 밝게 */
-  --surface: rgba(255,255,255,.92);     /* 카드 */
-  --surface2: rgba(255,255,255,.86);    /* result/inner */
-  --surface3: rgba(255,255,255,.78);    /* table head 등 */
-  --stroke: rgba(15,23,42,.12);
-  --stroke2: rgba(15,23,42,.08);
+  --surface: rgba(255,255,255,.94);
+  --surface2: rgba(255,255,255,.88);
+  --surface3: rgba(255,255,255,.82);
+  --stroke: rgba(15,23,42,.14);
+  --stroke2: rgba(15,23,42,.10);
 
-  /* ✅ 글씨는 “검은 계열”로 통일 */
-  --text: rgba(15, 23, 42, .92);        /* slate-900 */
-  --text2: rgba(15, 23, 42, .78);
+  --text: rgba(15, 23, 42, .94);
+  --text2: rgba(15, 23, 42, .8);
   --muted: rgba(15, 23, 42, .62);
-  --faint: rgba(15, 23, 42, .48);
+  --faint: rgba(15, 23, 42, .5);
 
-  --link: rgba(14, 116, 144, .95);      /* readable teal for links */
+  --link: rgba(14, 116, 144, .95);
 }
 
 *{ box-sizing:border-box; }
@@ -32,133 +29,240 @@ html, body{ height:100%; }
 body{
   color: var(--text);
   background:
-    radial-gradient(900px 600px at 10% 15%, color-mix(in srgb, var(--p1) 30%, transparent), transparent 60%),
-    radial-gradient(800px 550px at 92% 18%, color-mix(in srgb, var(--p2) 22%, transparent), transparent 58%),
-    radial-gradient(900px 650px at 65% 92%, color-mix(in srgb, var(--p3) 20%, transparent), transparent 60%),
-    radial-gradient(700px 500px at 35% 80%, color-mix(in srgb, var(--p5) 14%, transparent), transparent 62%),
+    radial-gradient(900px 600px at 10% 15%, color-mix(in srgb, var(--p1) 38%, transparent), transparent 60%),
+    radial-gradient(900px 650px at 86% 18%, color-mix(in srgb, var(--p3) 26%, transparent), transparent 62%),
+    radial-gradient(1000px 650px at 60% 95%, color-mix(in srgb, var(--p2) 24%, transparent), transparent 65%),
+    radial-gradient(820px 520px at 35% 80%, color-mix(in srgb, var(--p4) 18%, transparent), transparent 64%),
     linear-gradient(180deg, var(--bg0), var(--bg1) 35%, var(--bg2));
   overflow-x: hidden;
 }
 
-/* 배경 글로우 레이어 유지(너무 튀지 않게) */
 body::before{
   content:"";
   position: fixed;
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(circle at 20% 20%, rgba(255,255,255,.08), transparent 35%),
-    radial-gradient(circle at 80% 30%, rgba(255,255,255,.06), transparent 40%),
-    radial-gradient(circle at 50% 85%, rgba(255,255,255,.05), transparent 45%);
-  mix-blend-mode: overlay;
-  opacity: .28;
-  filter: blur(12px);
-  animation: floatGlow 10s ease-in-out infinite alternate;
-}
-@keyframes floatGlow{
-  from{ transform: translate3d(-10px, -8px, 0) scale(1); }
-  to  { transform: translate3d(12px, 10px, 0) scale(1.02); }
+    radial-gradient(circle at 20% 20%, rgba(255,255,255,.12), transparent 32%),
+    radial-gradient(circle at 80% 30%, rgba(255,255,255,.1), transparent 38%),
+    radial-gradient(circle at 55% 85%, rgba(255,255,255,.08), transparent 42%);
+  mix-blend-mode: screen;
+  opacity: .35;
+  filter: blur(18px);
+  animation: floatGlow 12s ease-in-out infinite alternate;
+  z-index: -1;
 }
 
-/* ✅ Navbar: 배경은 다크 유지하되 글자만 검은색으로 하면 안 보임
-   -> 네비는 “라이트 바(밝은 바)”로 바꿔서 텍스트를 검정으로 보이게 함 */
-.navbar{
-  background: rgba(255,255,255,.88) !important;
-  border-bottom: 1px solid rgba(15,23,42,.10);
-  backdrop-filter: blur(14px) saturate(140%);
+body::after{
+  content:"";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(120deg, rgba(255,255,255,.05), transparent 45%),
+    radial-gradient(circle at 70% 40%, rgba(255,255,255,.06), transparent 40%);
+  opacity: .4;
+  z-index: -1;
 }
+
+@keyframes floatGlow{
+  from{ transform: translate3d(-10px, -8px, 0) scale(1); }
+  to  { transform: translate3d(12px, 10px, 0) scale(1.03); }
+}
+
+.navbar{
+  background: rgba(255,255,255,.9) !important;
+  border-bottom: 1px solid rgba(15,23,42,.12);
+  backdrop-filter: blur(18px) saturate(160%);
+  box-shadow: 0 12px 30px rgba(15,23,42,.08);
+}
+
 .navbar .navbar-brand, .navbar .nav-link{
   color: var(--text) !important;
 }
+
 .navbar .nav-link{
   opacity: .82;
   transition: opacity .2s ease, transform .2s ease;
 }
+
 .navbar .nav-link:hover{ opacity: 1; transform: translateY(-1px); }
+
 .navbar .nav-link.active{
   opacity: 1;
   position: relative;
 }
+
 .navbar .nav-link.active::after{
   content:"";
   position:absolute;
   left: .55rem;
   right: .55rem;
-  bottom: .25rem;
+  bottom: .2rem;
   height: 2px;
   border-radius: 999px;
   background: linear-gradient(90deg, var(--p1), var(--p2), var(--p3));
 }
 
-/* Layout */
-.hero{ padding: 52px 0 18px; }
+.hero{
+  padding: 56px 0 22px;
+  position: relative;
+}
+
+.hero-orbs{
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-orbs span{
+  position: absolute;
+  width: 240px;
+  height: 240px;
+  border-radius: 999px;
+  filter: blur(0px);
+  opacity: .75;
+  background: radial-gradient(circle, rgba(255,255,255,.6), transparent 70%);
+  mix-blend-mode: screen;
+  animation: orbFloat 10s ease-in-out infinite alternate;
+}
+
+.hero-orbs span:nth-child(1){
+  top: -40px;
+  left: 6%;
+  background: radial-gradient(circle, rgba(139,92,246,.5), transparent 70%);
+}
+
+.hero-orbs span:nth-child(2){
+  top: 30px;
+  right: 10%;
+  background: radial-gradient(circle, rgba(34,211,238,.45), transparent 70%);
+  animation-delay: 1s;
+}
+
+.hero-orbs span:nth-child(3){
+  bottom: -60px;
+  left: 40%;
+  background: radial-gradient(circle, rgba(244,114,182,.4), transparent 70%);
+  animation-delay: 2s;
+}
+
+@keyframes orbFloat{
+  from{ transform: translate3d(0, 0, 0) scale(1); }
+  to  { transform: translate3d(12px, -8px, 0) scale(1.05); }
+}
+
 .muted{ color: var(--muted); }
 .tiny{ font-size: .875rem; color: var(--faint); }
 
-/* ✅ Card: 라이트 패널 + 검은 텍스트 */
 .card-glass{
   position: relative;
   background: var(--surface);
   border: 1px solid var(--stroke);
-  border-radius: 1.35rem;
+  border-radius: 1.5rem;
   box-shadow:
-    0 24px 80px rgba(0,0,0,.35),
-    0 0 0 1px rgba(255,255,255,.25) inset;
+    0 30px 80px rgba(15,23,42,.22),
+    0 0 0 1px rgba(255,255,255,.4) inset;
   overflow: hidden;
+  z-index: 1;
 }
 
-/* 이전에 쓰던 네온 보더 느낌은 "아주 얕게"만 */
 .card-glass::before{
   content:"";
   position:absolute;
   inset:-2px;
-  background: linear-gradient(120deg, rgba(124,58,237,.22), rgba(34,197,94,.18), rgba(6,182,212,.18), rgba(236,72,153,.14));
-  filter: blur(16px);
-  opacity: .55;
+  background: linear-gradient(120deg, rgba(139,92,246,.35), rgba(34,211,238,.25), rgba(52,211,153,.25), rgba(244,114,182,.25));
+  filter: blur(20px);
+  opacity: .75;
   z-index: 0;
-  animation: borderShift 7s linear infinite;
+  animation: borderShift 8s linear infinite;
 }
+
+.card-glass::after{
+  content:"";
+  position:absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 15%, rgba(255,255,255,.6), transparent 55%),
+    radial-gradient(circle at 85% 20%, rgba(255,255,255,.5), transparent 60%);
+  opacity: .4;
+  z-index: 0;
+}
+
 @keyframes borderShift{
   0%{ transform: translateX(-12%) rotate(0deg); }
   50%{ transform: translateX(12%) rotate(6deg); }
   100%{ transform: translateX(-12%) rotate(0deg); }
 }
+
 .card-glass > *{ position: relative; z-index: 1; }
 
-.card-glass h1, .card-glass .fw-semibold{
+.section-header{
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.section-header .eyebrow{
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: rgba(124,58,237,.8);
+  margin-bottom: .35rem;
+}
+
+.section-header .title{
+  font-size: 1.35rem;
+  font-weight: 700;
   color: var(--text);
 }
 
-/* ✅ Inputs */
+.badge-fancy{
+  padding: .45rem .9rem;
+  border-radius: 999px;
+  font-weight: 600;
+  color: rgba(15,23,42,.9);
+  background:
+    linear-gradient(120deg, rgba(255,255,255,.9), rgba(255,255,255,.65));
+  border: 1px solid rgba(15,23,42,.12);
+  box-shadow: 0 12px 30px rgba(15,23,42,.15);
+}
+
 .form-control, .btn, .badge{ border-radius: 1rem; }
 
 .form-control{
-  background: rgba(255,255,255,.96);
+  background: rgba(255,255,255,.98);
   border: 1px solid rgba(15,23,42,.16);
   color: var(--text);
   transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
 }
+
 .form-control::placeholder{ color: rgba(15,23,42,.42); }
+
 .form-control:focus{
-  background: rgba(255,255,255,.98);
-  border-color: rgba(124,58,237,.45);
-  box-shadow: 0 0 0 .25rem rgba(124,58,237,.16);
+  background: rgba(255,255,255,1);
+  border-color: rgba(139,92,246,.5);
+  box-shadow: 0 0 0 .25rem rgba(139,92,246,.18);
   transform: translateY(-1px);
   color: var(--text);
 }
 
-/* ✅ Buttons: 배경은 컬러 유지해도 글씨는 검정 계열 */
 .btn{
   transition: transform .15s ease, filter .15s ease, box-shadow .15s ease;
-  color: rgba(15,23,42,.92);
+  color: rgba(15,23,42,.94);
 }
+
 .btn-primary{
   position: relative;
-  border: 1px solid rgba(15,23,42,.10);
-  background: linear-gradient(135deg, rgba(124,58,237,.95), rgba(34,197,94,.78), rgba(6,182,212,.78));
-  box-shadow: 0 16px 40px rgba(0,0,0,.18);
+  border: 1px solid rgba(15,23,42,.12);
+  background: linear-gradient(135deg, rgba(139,92,246,.95), rgba(34,211,238,.85), rgba(52,211,153,.8));
+  box-shadow: 0 16px 40px rgba(15,23,42,.18);
   overflow: hidden;
 }
+
 .btn-primary::after{
   content:"";
   position:absolute;
@@ -166,88 +270,89 @@ body::before{
   left:-30%;
   width: 45%;
   height: 220%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.35), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.45), transparent);
   transform: rotate(20deg);
   animation: shine 2.8s ease-in-out infinite;
-  opacity: .55;
+  opacity: .6;
 }
+
 @keyframes shine{
   0%{ transform: translateX(-140%) rotate(20deg); }
   55%{ transform: translateX(240%) rotate(20deg); }
   100%{ transform: translateX(240%) rotate(20deg); }
 }
-.btn-primary:hover{ transform: translateY(-1px); filter: brightness(1.02); }
+
+.btn-primary:hover{ transform: translateY(-1px); filter: brightness(1.03); }
 .btn-primary:active{ transform: translateY(0px); }
 
-/* outline 버튼도 검은 글씨 유지 */
 .btn-outline-light{
   border-color: rgba(15,23,42,.18);
   color: rgba(15,23,42,.82);
-  background: rgba(255,255,255,.72);
+  background: rgba(255,255,255,.78);
 }
+
 .btn-outline-light:hover{
-  background: rgba(255,255,255,.90);
+  background: rgba(255,255,255,.95);
   color: rgba(15,23,42,.92);
 }
 
-/* ✅ Result boxes */
 .result-wrap{
   background: var(--surface2);
   border: 1px solid var(--stroke2);
   border-radius: 1.1rem;
-  padding: 14px;
-  box-shadow: 0 10px 26px rgba(0,0,0,.10);
+  padding: 16px;
+  box-shadow: 0 14px 32px rgba(15,23,42,.12);
 }
 
-/* ✅ KV grid */
 .kv{
   display: grid;
   grid-template-columns: 120px 1fr;
   gap: 10px 14px;
   font-size: .98rem;
 }
+
 .kv .k{ color: var(--muted); }
 .kv .v{ color: var(--text); word-break: break-all; }
 
-/* ✅ Table */
 .table-glass{
-  background: rgba(255,255,255,.92);
-  border: 1px solid rgba(15,23,42,.10);
+  background: rgba(255,255,255,.94);
+  border: 1px solid rgba(15,23,42,.1);
   border-radius: 1.1rem;
   overflow: hidden;
-  box-shadow: 0 14px 32px rgba(0,0,0,.12);
+  box-shadow: 0 18px 38px rgba(15,23,42,.12);
 }
+
 .table-glass .table{ margin: 0; }
 
 .table-glass thead th{
   background: var(--surface3);
-  color: rgba(15,23,42,.85);
-  border-color: rgba(15,23,42,.10);
-}
-.table-glass tbody td{
-  color: rgba(15,23,42,.90);
-  border-color: rgba(15,23,42,.10);
-}
-.table-glass tbody tr:hover{
-  background: rgba(124,58,237,.06);
+  color: rgba(15,23,42,.88);
+  border-color: rgba(15,23,42,.12);
 }
 
-/* ✅ Links */
+.table-glass tbody td{
+  color: rgba(15,23,42,.92);
+  border-color: rgba(15,23,42,.12);
+}
+
+.table-glass tbody tr:hover{
+  background: rgba(139,92,246,.08);
+}
+
 .link-light{
   color: var(--link) !important;
   text-decoration: none;
   border-bottom: 1px dashed rgba(14,116,144,.35);
 }
+
 .link-light:hover{
   color: rgba(15,23,42,.92) !important;
   border-bottom-color: rgba(15,23,42,.38);
 }
 
-/* ✅ Badge */
 .badge.text-bg-light{
-  background: rgba(15,23,42,.10) !important;
+  background: rgba(15,23,42,.1) !important;
   color: rgba(15,23,42,.92) !important;
 }
 
-/* Toast */
 .toast-container{ z-index: 1080; }
