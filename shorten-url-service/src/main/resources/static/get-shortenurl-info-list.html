@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>단축 URL 전체 조회</title>
+    <title>단축 URL 단건 정보 조회</title>
 
     <link href="/ui/style.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -27,10 +27,10 @@
                     <a class="nav-link" href="/ui/create-shortenurl.html">단축 URL 생성</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/ui/get-shortenurl-info.html">단축 URL 단건 정보 조회</a>
+                    <a class="nav-link active" aria-current="page" href="/ui/get-shortenurl-info.html">단축 URL 단건 정보 조회</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/ui/get-shortenurl-info-list.html">단축 URL 전체 조회</a>
+                    <a class="nav-link" href="/ui/get-shortenurl-info-list.html">단축 URL 전체 조회</a>
                 </li>
             </ul>
         </div>
@@ -38,48 +38,41 @@
 </nav>
 
 <main class="container hero">
+    <div class="hero-orbs" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
     <div class="row justify-content-center">
-        <div class="col-12 col-lg-10">
+        <div class="col-12 col-md-9 col-lg-7">
             <div class="card card-glass p-4 p-md-5">
-                <div class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-3">
+                <div class="section-header mb-3">
                     <div>
-                        <h1 class="h4 mb-1 fw-semibold">단축 URL 전체 조회</h1>
-                        <p class="mb-0 muted tiny">등록된 모든 단축 URL 정보를 표 형태로 조회합니다.</p>
+                        <div class="eyebrow">Single</div>
+                        <h1 class="title mb-1">단축 URL 단건 정보 조회</h1>
+                        <p class="mb-0 muted tiny">단축 URL의 KEY를 입력하면 원본 URL과 사용 횟수를 조회합니다.</p>
                     </div>
-                    <div class="d-flex align-items-center gap-2">
-                        <button id="load-btn" class="btn btn-primary" onclick="getShortenurlInfoList();">
-                            전체 조회
-                        </button>
-                        <span id="count-badge" class="badge text-bg-light text-dark rounded-pill">0건</span>
-                    </div>
+                    <span class="badge-fancy align-self-start">Single</span>
                 </div>
 
-                <div class="result-wrap">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <div class="fw-semibold">목록</div>
-                        <div id="status-text" class="tiny muted"></div>
+                <form onsubmit="return getShortenurlInfo();" class="mt-3">
+                    <label for="shortenurl-key" class="form-label muted">단축 URL KEY</label>
+                    <div class="input-group">
+                        <input type="text" id="shortenurl-key" class="form-control" placeholder="예: abcd1234" required>
+                        <button id="submit-btn" type="submit" class="btn btn-primary px-4">조회</button>
                     </div>
+                    <div class="form-text muted tiny mt-2">예: 생성된 링크의 마지막 경로(/KEY)를 입력하세요.</div>
+                </form>
 
-                    <div class="table-glass">
-                        <table class="table table-sm align-middle">
-                            <thead>
-                            <tr>
-                                <th style="width: 46%;">원본 URL</th>
-                                <th style="width: 18%;">단축 KEY</th>
-                                <th style="width: 12%;">사용 횟수</th>
-                                <th style="width: 24%;">단축 URL</th>
-                            </tr>
-                            </thead>
-                            <tbody id="shortenurl-info-list">
-                            <tr>
-                                <td colspan="4" class="muted">아직 조회하지 않았습니다.</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="tiny muted mt-2">
-                        단축 URL은 <span class="fw-semibold">현재 호스트 기준</span>으로 표시됩니다.
+                <div class="mt-4">
+                    <div class="fw-semibold mb-2">조회 결과</div>
+                    <div class="result-wrap">
+                        <div id="shortenurl-info" class="kv">
+                            <div class="k">원본 URL</div><div class="v muted">-</div>
+                            <div class="k">단축 KEY</div><div class="v muted">-</div>
+                            <div class="k">사용 횟수</div><div class="v muted">-</div>
+                        </div>
+                        <div id="status-text" class="tiny muted mt-2"></div>
                     </div>
                 </div>
             </div>
@@ -114,74 +107,49 @@
     }
 
     function setLoading(isLoading) {
-      const btn = document.getElementById('load-btn');
+      const btn = document.getElementById('submit-btn');
+      const input = document.getElementById('shortenurl-key');
       btn.disabled = isLoading;
+      input.disabled = isLoading;
       btn.innerHTML = isLoading
-        ? '<span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>불러오는 중...'
-        : '전체 조회';
+        ? '<span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>조회 중...'
+        : '조회';
     }
 
-    function escapeHtml(s) {
-      return String(s ?? '')
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#039;');
+    function setKV(data) {
+      const info = document.getElementById('shortenurl-info');
+      info.innerHTML = `
+        <div class="k">원본 URL</div><div class="v">${data.originalUrl ?? '-'}</div>
+        <div class="k">단축 KEY</div><div class="v">${data.shortenUrlKey ?? '-'}</div>
+        <div class="k">사용 횟수</div><div class="v">${data.redirectCount ?? '-'}</div>
+      `;
     }
 
-    // ✅ 기존 기능 유지: GET /shortenUrls -> 리스트 표시
-    function getShortenurlInfoList() {
+    function setError(message) {
+      document.getElementById('status-text').textContent =
+        message || '요청에 실패했습니다. KEY를 확인해주세요.';
+      showToast('요청 실패');
+    }
+    
+    function getShortenurlInfo() {
+      const shortenurlKey = document.querySelector('#shortenurl-key').value;
       document.getElementById('status-text').textContent = '';
       setLoading(true);
 
-      fetch('/shortenUrls', { method: 'GET' })
+      fetch('/shortenUrl/' + shortenurlKey, { method: 'GET' })
         .then(response => {
           if (response.status === 200) return response.json();
           throw new Error('request failed');
         })
         .then(data => {
           console.log(data);
-
-          const tbody = document.querySelector('#shortenurl-info-list');
-          const hostPrefix = window.location.protocol + "//" + window.location.host + "/";
-
-          if (!Array.isArray(data) || data.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="4" class="muted">데이터가 없습니다.</td></tr>`;
-            document.getElementById('count-badge').textContent = '0건';
-            document.getElementById('status-text').textContent = '완료';
-            showToast('조회 완료');
-            return;
-          }
-
-          let rows = "";
-          data.forEach(item => {
-            const originalUrl = escapeHtml(item.originalUrl);
-            const key = escapeHtml(item.shortenUrlKey);
-            const count = escapeHtml(item.redirectCount);
-            const shortUrl = hostPrefix + key;
-
-            rows += `
-              <tr>
-                <td class="text-break">${originalUrl}</td>
-                <td><span class="badge text-bg-light text-dark">${key}</span></td>
-                <td>${count}</td>
-                <td class="text-break">
-                  <a class="link-light" href="/${key}" target="_blank" rel="noreferrer">${escapeHtml(shortUrl)}</a>
-                </td>
-              </tr>
-            `;
-          });
-
-          tbody.innerHTML = rows;
-          document.getElementById('count-badge').textContent = `${data.length}건`;
+          setKV(data);
           document.getElementById('status-text').textContent = '조회 완료';
           showToast('조회 완료');
         })
         .catch(error => {
           console.error('request failed', error);
-          document.getElementById('status-text').textContent = '요청 실패';
-          showToast('요청 실패');
+          setError('요청에 실패했습니다. KEY를 확인해주세요.');
         })
         .finally(() => setLoading(false));
 
