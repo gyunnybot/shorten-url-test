@@ -38,15 +38,21 @@
 </nav>
 
 <main class="container hero">
+    <div class="hero-orbs" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
     <div class="row justify-content-center">
         <div class="col-12 col-md-8 col-lg-6">
             <div class="card card-glass p-4 p-md-5">
-                <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
+                <div class="section-header mb-3">
                     <div>
-                        <h1 class="h4 mb-1 fw-semibold">단축 URL 생성</h1>
+                        <div class="eyebrow">Create</div>
+                        <h1 class="title mb-1">단축 URL 생성</h1>
                         <p class="mb-0 muted tiny">원본 URL을 입력하면 즉시 단축 링크를 생성합니다.</p>
                     </div>
-                    <span class="badge text-bg-light text-dark rounded-pill align-self-start">Create</span>
+                    <span class="badge-fancy align-self-start">Create</span>
                 </div>
 
                 <form onsubmit="return createShortenurl();" class="mt-3">
