@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>단축 URL 생성</title>
+
+    <link href="/ui/style.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+          crossorigin="anonymous">
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container">
+        <a class="navbar-brand fw-semibold" href="/ui/create-shortenurl.html">단축 URL 서비스</a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 gap-lg-2">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/ui/create-shortenurl.html">단축 URL 생성</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/ui/get-shortenurl-info.html">단축 URL 단건 정보 조회</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/ui/get-shortenurl-info-list.html">단축 URL 전체 조회</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<main class="container hero">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+            <div class="card card-glass p-4 p-md-5">
+                <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
+                    <div>
+                        <h1 class="h4 mb-1 fw-semibold">단축 URL 생성</h1>
+                        <p class="mb-0 muted tiny">원본 URL을 입력하면 즉시 단축 링크를 생성합니다.</p>
+                    </div>
+                    <span class="badge text-bg-light text-dark rounded-pill align-self-start">Create</span>
+                </div>
+
+                <form onsubmit="return createShortenurl();" class="mt-3">
+                    <label for="url-input" class="form-label muted">단축할 URL</label>
+                    <div class="input-group">
+                        <input type="url" class="form-control" id="url-input" placeholder="https://www.google.com" required>
+                        <button id="submit-btn" type="submit" class="btn btn-primary px-4">생성</button>
+                    </div>
+                    <div class="form-text muted tiny mt-2">예: https://example.com/path?query=1</div>
+                </form>
+
+                <div class="mt-4">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <div class="fw-semibold">생성된 단축 URL</div>
+                        <div class="d-flex gap-2">
+                            <button id="copy-btn" class="btn btn-outline-light btn-sm" type="button" disabled>복사</button>
+                            <a id="open-link" class="btn btn-outline-light btn-sm disabled" href="#" target="_blank" rel="noreferrer">
+                                열기
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="result-wrap">
+                        <input id="created-shortenurl" class="form-control" type="text"
+                               value="여기에 단축된 URL이 생성됩니다."
+                               aria-label="created shorten url" readonly disabled>
+                        <div id="status-text" class="tiny muted mt-2"></div>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-center muted tiny mt-4 mb-0">© Shorten URL Service</p>
+        </div>
+    </div>
+</main>
+
+<!-- Toast -->
+<div class="toast-container position-fixed top-0 end-0 p-3">
+    <div id="app-toast" class="toast text-bg-dark border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div id="toast-body" class="toast-body">완료</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                    aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+
+<script>
+    function showToast(message) {
+      const toastEl = document.getElementById('app-toast');
+      const toastBody = document.getElementById('toast-body');
+      toastBody.textContent = message;
+      const toast = bootstrap.Toast.getOrCreateInstance(toastEl, { delay: 1800 });
+      toast.show();
+    }
+
+    function setLoading(isLoading) {
+      const btn = document.getElementById('submit-btn');
+      const input = document.getElementById('url-input');
+      btn.disabled = isLoading;
+      input.disabled = isLoading;
+      btn.innerHTML = isLoading
+        ? '<span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>생성 중...'
+        : '생성';
+    }
+
+    function setResult(url) {
+      const createdDom = document.querySelector('#created-shortenurl');
+      const copyBtn = document.getElementById('copy-btn');
+      const openLink = document.getElementById('open-link');
+      const statusText = document.getElementById('status-text');
+
+      createdDom.disabled = false;
+      createdDom.value = url;
+      createdDom.disabled = true;
+
+      copyBtn.disabled = false;
+      openLink.classList.remove('disabled');
+      openLink.href = url;
+
+      statusText.textContent = '단축 URL이 생성되었습니다.';
+    }
+
+    function setError(message) {
+      const statusText = document.getElementById('status-text');
+      statusText.textContent = message || '요청에 실패했습니다. 잠시 후 다시 시도해주세요.';
+      showToast('요청 실패');
+    }
+
+    // ✅ 기존 기능 유지: /shortenUrl POST -> response JSON shortenUrlKey -> 현재 호스트 기준 URL 생성
+    function createShortenurl() {
+      const url = document.querySelector('#url-input').value;
+      const requestObject = { originalUrl: url };
+
+      setLoading(true);
+
+      fetch('/shortenUrl', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestObject)
+      })
+      .then(response => {
+        if (response.status === 200) return response.json();
+        throw new Error('request failed');
+      })
+      .then(data => {
+        const shortenurl = window.location.protocol + "//" + window.location.host + "/" + data.shortenUrlKey;
+        setResult(shortenurl);
+        showToast('단축 URL 생성 완료');
+      })
+      .catch(error => {
+        console.error('request failed', error);
+        setError('요청에 실패했습니다. 입력 URL을 확인해주세요.');
+      })
+      .finally(() => setLoading(false));
+
+      return false;
+    }
+
+    // UI 개선용: 복사 버튼
+    document.getElementById('copy-btn').addEventListener('click', async () => {
+      const createdDom = document.querySelector('#created-shortenurl');
+      const text = createdDom.value;
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast('복사 완료');
+      } catch (e) {
+        createdDom.disabled = false;
+        createdDom.select();
+        document.execCommand('copy');
+        createdDom.disabled = true;
+        showToast('복사 완료');
+      }
+    });
+</script>
+</body>
+</html>
